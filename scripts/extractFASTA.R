@@ -1,0 +1,17 @@
+args <- commandArgs(TRUE)
+df<-read.csv(args[1],header=T)
+set3<-numeric(0)
+dimdf<-dim(df)
+for (t in 1:dimdf[1]) {
+	a<-paste(df[t,1],":",df[t,2],"-",df[t,3],sep="")
+	a1<-paste(df[t,5],":",sep="")
+	b1<-system(paste("samtools faidx",args[2],a,"| bcftools consensus ",args[3]),intern = TRUE)
+	b2<-gsub("a", "A", b1)
+	b3<-gsub("t", "T", b2)
+	b4<-gsub("g", "G", b3)
+	b<-gsub("c", "C", b4)
+	c<-paste(b[2:length(b)], collapse = "")
+	b1<-paste(a1,c,sep="")
+	set3<-c(set3,b1)
+}
+write.table(set3,quote=F,row.names=F,col.names=F,args[4])
